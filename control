@@ -18,6 +18,7 @@ GHController.controller('LoginCtrl', function($scope, $rootScope, $location, $ht
     			flag=1;
     			if(user.password==$scope.password){
     				$rootScope.user=user;
+    				$rootScope.name=user.name;
     				$location.path("/home");
     			}
     			else{
@@ -64,9 +65,25 @@ GHController.controller('BookingCtrl', function($scope, $rootScope, $location, $
 	
 		//code for generating a new booking ID for a new booking
         var bookingId=Number(Math.floor(Math.random()*10000));
-		
 		// use constructor/prototype to initialize the new booking object property
-   
 		//instantiate the new booking object and push it into specificBooking[]
+		var Booking=function(bookingId,name,fromDate,toDate,guests,rooms){
+   			this.bookingId=bookingId;
+   			this.name=name;
+   			this.fromDate=fromDate;
+   			this.toDate=toDate;
+   			this.guests=guests;
+   			this.rooms=rooms;   			
+   		};
+   		console.log($rootScope.specificBooking.length);
+   		book=new Booking(bookingId,$scope.name,$scope.from,$scope.to,$scope.guests,$scope.rooms);
+   		$rootScope.specificBooking.push(book);
+   		alert("Booking Success!!!\nHere's the Summary: \nBooking Id for "+$scope.name+"'s booking is "+bookingId+" and "+$scope.rooms+" room(s) are booked between "+$scope.from+"and "+$scope.to);
+   		console.log($rootScope.specificBooking.length);
+
+
+
+
+
 	}
 });
