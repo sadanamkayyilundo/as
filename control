@@ -1,29 +1,72 @@
-var guestHouseApp = angular.module('guestHouseApp', ['GHController',"ngRoute"]);
+var GHController = angular.module('GHController', []);
 
-//Include Routing Logic here
-guestHouseApp.config(function($routeProvider){
-	$routeProvider.
-	when('/main',{
-		templateUrl: 'main',
-	}).
-	when('/login',{
-		templateUrl: 'partials/login.html',
-		controller: 'LoginCtrl'
-	}).
-	when('/home',{
-		templateUrl: 'partials/home.html',
-		controller: 'BookingCtrl'
-	}).
-	when('/bookings',{
-		templateUrl: 'partials/bookings.html',
-		controller: 'BookingCtrl'
-	}).
-	when('/bookingForm',{
-		templateUrl: 'partials/bookingForm.html',
-		controller: 'BookingCtrl'
-	}).
-	otherwise({
-		redirectTo: '/main'
-	});
+GHController.controller('LoginCtrl', function($scope, $rootScope, $location, $http) {
+	//fetch users.json here
+	$http.get("../exam/data/users.json").then(function(response){
+		console.log("Success  "+response);
+		$scope.users=response.data;
+	}).then(function(response){
+			if(response)
+				console.log("Error  "+response);
+	})
+
+
+    $scope.validate = function() {
+    	flag=0
+    	angular.forEach($scope.users,function(user){
+    		if(user.username==$scope.username){
+    			flag=1;
+    			if(user.password==$scope.password){
+    				$rootScope.user=user;
+    				$location.path("/home");
+    			}
+    			else{
+    				alert("Enter valid credentials");
+					$location.path("/login");
+    			}
+    			return;
+    		}
+    	});
+
+    	if(flag==0){
+    		alert("No Such User exists");
+    		$location.path("/login");
+    	}
+	};
+
+});
+
+
+GHController.controller('BookingCtrl', function($scope, $rootScope, $location, $http) {
+    //fetch bookings.json here
+    $http.get("../exam/data/bookings.json").then(function(response){
+		console.log("Success  "+response);
+		$scope.bookings=response.data;
+	}).then(function(response){
+			if(response)
+				console.log("Error  "+response);
+	})
+    $scope.showBookings=function(){
+
+	//use this empty array to create the bookings list for the logged in user.
+		$rootScope.specificBooking=[];
+		
+	//Insert each entry from a loop, using push function
+		angular.forEach($scope.bookings,function(booking){
+			if(booking.name==$rootScope.user.name){
+				$rootScope.specificBooking.push(booking);
+			}
+		})
+		console.log($rootScope.specificBooking);
+}
+
+	$scope.book = function(){
 	
+		//code for generating a new booking ID for a new booking
+        var bookingId=Number(Math.floor(Math.random()*10000));
+		
+		// use constructor/prototype to initialize the new booking object property
+   
+		//instantiate the new booking object and push it into specificBooking[]
+	}
 });
